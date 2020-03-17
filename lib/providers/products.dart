@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/providers/auth.dart';
 
 import '../models/http_exception.dart';
 import './product.dart';
@@ -43,6 +44,15 @@ class Products with ChangeNotifier {
 
   // var _showFavoritesOnly = false;
 
+  // String authToken;
+  // void update(Products products, Auth auth) {
+  //   authToken = auth.token;
+  //   _items = products == null ? [] : products.items;
+  // }
+
+  final String authToken;
+  Products(this.authToken, this._items);
+
   List<Product> get items {
     return [..._items];
   }
@@ -66,7 +76,8 @@ class Products with ChangeNotifier {
   // }
 
   Future<void> fetchAndSetProducts() async {
-    const url = 'https://flutter-shop-6bd3c.firebaseio.com/products.json';
+    final url =
+        'https://flutter-shop-6bd3c.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
